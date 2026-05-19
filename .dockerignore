@@ -1,1 +1,16 @@
 node_modules/
+.env
+.env.production
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+# Docker files (no need to copy into image)
+Dockerfile
+docker-compose.yml
+compose.yaml
+.dockerignore
+# Git
+.git
+.gitignore
