@@ -1,0 +1,28 @@
+services:
+  mongoDB:
+    image: mongo:7
+    container_name: mongoDB
+    restart: unless-stopped
+    env_file: .env.production
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+  backend:
+    build: .
+    container_name: express_backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    networks:
+      - app-network
+    depends_on:
+      - mongoDB
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
