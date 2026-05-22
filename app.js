@@ -1,19 +1,32 @@
 import express from "express";
-const app = express();
 import connectDB from "./config/db.js";
-import { registerUser } from "./controller/userController.js";
-const PORT = 3000;
+import errorMiddleware from "./middlewares/errorMiddleware.js";
+import userRoutes from "./routes/userRoutes.js";
+import { errorResponse, successResponse } from "./utils/apiResponse.js";
+
+const app = express();
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Welcome");
+  return successResponse(res, 200, "Welcome");
 });
 
-app.post("/register", registerUser);
+app.use("/api/v1/auth", userRoutes);
 
-connectDB();
-
-app.listen(PORT, () => {
-  console.log("Youre server is running on port", PORT);
+app.use((req, res) => {
+  return errorResponse(res, 404, "Route not found");
 });
+
+app.use(errorMiddleware);
+
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log("Your server is running on port", PORT);
+  });
+};
+
+startServer();
